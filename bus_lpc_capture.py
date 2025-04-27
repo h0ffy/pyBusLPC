@@ -1,7 +1,7 @@
 #!/usr/local/env python3
 
 
-class LPC-Capture:
+class LPCCapture:
   
   recording = False
   last_clk = 0
@@ -50,8 +50,46 @@ class LPC-Capture:
     
                 last_clk = clk
     
+
+
+
+    def interpret_frame(nibbles):
+        if len(nibbles) < 3:
+            return "Incomplete frame"
     
-    def interpretar_frame(nibbles):
+        output = []
+    
+        start_code = nibbles[0][1]
+        sync_code = nibbles[1][1]
+        command = nibbles[2][1]
+    
+        if start_code != 0x0:
+            output.append("Error: No Start Frame detected")
+        if sync_code != 0xF:
+            output.append("Error: No Sync Confirm detected")
+    
+        if command == 0x1:
+            output.append("Command: I/O Read")
+        elif command == 0x2:
+            output.append("Command: I/O Write")
+        else:
+            output.append(f"Unknown Command: 0x{command:X}")
+    
+        # Decode address (next 4 nibbles if available)
+        if len(nibbles) >= 7:
+            address = (nibbles[3][1] << 12) | (nibbles[4][1] << 8) | (nibbles[5][1] << 4) | nibbles[6][1]
+            output.append(f"Address: 0x{address:04X}")
+    
+        # Decode data (next 4 nibbles if available)
+        if len(nibbles) >= 11:
+            data = (nibbles[7][1] << 12) | (nibbles[8][1] << 8) | (nibbles[9][1] << 4) | nibbles[10][1]
+            output.append(f"Data: 0x{data:04X}")
+    
+        return output
+    
+        
+        
+    def interpret_frame2(nibbles):
         if len(nibbles) < 3:
             return "Error frame is broken"
     
@@ -78,9 +116,25 @@ class LPC-Capture:
             offset = (nibbles[3][1] << 12) | (nibbles[4][1] << 8) | (nibbles[5][1] << 4) | nibbles[6][1]
             out.append(f"Offset: 0x{offset:04X}")
     
-        # Data ( is exists
+        # Data ( if exists )
         if len(nibbles) >= 11:
             data = (nibbles[7][1] << 12) | (nibbles[8][1] << 8) | (nibbles[9][1] << 4) | nibbles[10][1]
             out.append(f"Data: 0x{data:04X}")
     
         return out
+
+
+
+
+
+def banner() {
+  printf(f"{sys.argv[0]} <file_recorded.csv")
+}
+
+# main
+
+if len(sys.argv) != 1:
+  banner()
+
+
+relo = LPCCapture()
