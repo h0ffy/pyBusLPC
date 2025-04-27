@@ -7,7 +7,8 @@ class LPC-Capture:
   last_clk = 0
   cur_nibble = []
 
-  def __init__(self):
+  def __init__(self,file_path="record.csv"):
+    self._out_file = file_path
 
     
   def __run__(self):
@@ -21,8 +22,9 @@ class LPC-Capture:
   
   
   
-  def detect_trigger():
-    signal_file = 'signal_record.csv'
+  def detect_trigger(self):
+    #signal_file = 'signal_record.csv'
+    signal_file = self._out_file
     
     with open(signal_file, 'r') as file:
         reader = csv.reader(file)
