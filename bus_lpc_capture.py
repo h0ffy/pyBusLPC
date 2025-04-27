@@ -74,7 +74,7 @@ class LPC-Capture:
         # OFFSET (nextb 4 nibbles)
         if len(nibbles) >= 7:
             offset = (nibbles[3][1] << 12) | (nibbles[4][1] << 8) | (nibbles[5][1] << 4) | nibbles[6][1]
-            out.append(f"Offset: 0x{direccion:04X}")
+            out.append(f"Offset: 0x{offset:04X}")
     
         # Data ( is exists
         if len(nibbles) >= 11:
