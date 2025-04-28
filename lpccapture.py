@@ -33,6 +33,7 @@ class LPCCapture:
 
         try:
             logic = Saleae()
+            Saleae.kill_logic()
             logic.connect()
         except Exception as e:
             print(f"Error connecting to Saleae Logic Device: {e}")
