@@ -7,7 +7,8 @@
 # and interprets the frames based on the LPC protocol.
 import csv
 import sys
-from saleae import Saleae
+#from saleae import *
+import saleae
 import subprocess
 import sys,os
 
@@ -32,8 +33,16 @@ class LPCCapture:
         # Connect to Saleae Logic software
 
         try:
-            logic = Saleae()
-            Saleae.kill_logic()
+            logic = saleae.Saleae('localhost', 10429)
+            
+            
+
+        except Exception as e:
+            print(f"Error to start Saleae Logic software Class: {e}")    
+        
+        # Check if the device is connected
+        try:
+            logic.set_active_app('Logic')    
             logic.connect()
         except Exception as e:
             print(f"Error connecting to Saleae Logic Device: {e}")
@@ -89,7 +98,9 @@ class LPCCapture:
         # Export captured data to CSV
         try:
             output_file = 'capture.csv'
+            logic.capture_to_csv(output_file, analog=False, digital=True)
             logic.export_data(output_file, analog=False, digital=True)
+            #login.export_data2
         except Exception as e:
             print(f"Error exporting data: {e}")
             return

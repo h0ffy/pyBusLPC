@@ -1,1 +1,2 @@
 saleae
+python-saleae-cli
